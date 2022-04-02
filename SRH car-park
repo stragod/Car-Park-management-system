@@ -1,0 +1,114 @@
+""""Alireza Ghara
+    SRH Parking place
+    14.12.2021"""
+import ast
+
+
+class Vehicle(object):
+    def __init__(self):
+        self.p_dict = {}
+        self.file = open('db.txt', 'a+')
+        self.parking_cap = 375
+
+    def check_db_empty(self, db):
+        if db == '':
+            db = "{}"
+        return db
+
+    def update_db(self):
+        with open("db.txt", 'w') as file:
+            file.write(str(self.p_dict))
+
+    def read_db(self):
+        return ast.literal_eval(self.check_db_empty(open('db.txt', 'r').read()))
+
+    def writing(self, new_entry):
+        self.p_dict = self.read_db()
+        if len(self.p_dict) <= self.parking_cap:
+            self.p_dict[len(self.p_dict) + 1] = new_entry
+            self.update_db()
+        else:
+            err_msg = "Parking lot is full, you can only check out"
+            raise err_msg
+        # d = self.read_db()
+        # i = len(d)
+        # if i <= 375:
+        #     d[375 - i] = self.p_dict
+        # else:
+        #     err_msg = "Parking lot is full, you can only check out"
+        #     raise err_msg
+        # with open("db.txt", 'w') as file:
+        #     file.write(str(d))
+        # # f = open('db.txt', 'w')
+        # # f.write(str(d))
+
+    # def remove_object(self):
+    #     d = self.read_db()
+    #     i = len(d)
+    #     while True:
+    #         read_db.pop(s) #how can i remove a specific key in the dictionary?
+    def print_last_db_entry(self):
+        d = self.read_db()
+        i = (375 - len(d))
+        if i == 376:
+            print("database is empty")
+        elif i <= 0:
+            print("Parking lot is full")
+        else:
+            print(d[i])
+
+    def show_keys(self):
+        d = self.read_db()
+        s = "possible options are:\n"
+        for key, val in d.items():
+            s += str(key) + " "
+        return s
+
+    def return_el_from_dict(self, el):
+        d = self.read_db()
+        return d[el]
+
+
+def main():
+    f = Vehicle()
+    while(True):
+        print("type:\n\t*Please Insert in to check-in \n\t* Please Insert out to Check-out \n\t* press read to read Database \n\t* press exit to exit the program")
+        action = input("\n>")
+        print(action)
+        if "exit" in action:
+            print("good bye!")
+            break
+        elif "in" in action:
+            entry = {}
+            typ = input("Vehicle Type: \n>")
+            entry["Vehicle Type"] = input("Vehicle Type:\n>")
+            entry["Registration Number"] = input("Registration Number:\n>")
+            entry["Check out time"] = input("Check out time:\n>")
+            f.writing(entry)
+        elif "out" in action:
+            s = input("please enter the assigned vehicle number: ")
+            f.p_dict = f.read_db()
+            print(f.p_dict)
+            f.p_dict.pop(int(s))
+            # f.cleanup()
+            f.update_db()
+        elif "read" in action:
+            # print(f.read_db())
+            a = f.read_db()
+            for i in a:
+                print(i, a[i])
+        elif "last" in action:
+            f.print_last_db_entry()
+        elif "return" in action:
+            print(f.show_keys())
+            el = int(input("What element to return?"))
+            print(f.return_el_from_dict(el))
+        else:
+            print("your print looks strange!!")
+
+if __name__ == '__main__':
+    try:
+        main()
+    except:
+        print("good bye!")
+
